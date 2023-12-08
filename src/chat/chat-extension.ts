@@ -5,7 +5,7 @@ import type { ChannelJson, MessageJson, ProviderJson, RoomJson } from '../models
 import { Channel, Message, Provider, Room } from '../models';
 
 export const ChatExtensionType: ExtensionType<ChatExtension> = defineExtensionType(ExtensionInfo.create('chat'), (client: Client) => new ChatExtension(client), () => [TableExtensionType]);
-const MessagesTableKey = new ModelTableType<Message, MessageJson>(TableInfo.create(ChatExtensionType, 'messages').setUseDatabase(true), Serializer.model(Message.fromJson));
+const MessagesTableKey = new ModelTableType<Message, MessageJson>(TableInfo.create(ChatExtensionType, 'messages').setUseDatabase(true).setCache(100), Serializer.model(Message.fromJson));
 const ChannelsTableKey = new ModelTableType<Channel, ChannelJson>(TableInfo.create(ChatExtensionType, 'channels'), Serializer.model(Channel.fromJson));
 const ProvidersTableKey = new ModelTableType<Provider, ProviderJson>(TableInfo.create(ChatExtensionType, 'providers'), Serializer.model(Provider.fromJson));
 const RoomsTableKey = new ModelTableType<Room, RoomJson>(TableInfo.create(ChatExtensionType, 'rooms'), Serializer.model(Room.fromJson));
