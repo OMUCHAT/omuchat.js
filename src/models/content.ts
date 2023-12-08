@@ -27,11 +27,8 @@ export class ContentComponent implements Model<ContentComponentJson> {
         }
     }
 
-    json(): ContentComponentJson {
-        return {
-            type: this.type,
-            siblings: this.siblings?.map(s => s.json()),
-        };
+    json(): ContentJson {
+        throw new Error('Not implemented');
     }
 }
 

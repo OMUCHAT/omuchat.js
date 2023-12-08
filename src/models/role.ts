@@ -3,26 +3,26 @@ import type { Model } from '@omuchat/omu.js/src/interface';
 export interface RoleJson {
     id?: string;
     name: string;
-    icon_url: string;
     is_owner: boolean;
     is_moderator: boolean;
+    icon_url?: string;
     color?: string;
 }
 
 export class Role implements Model<RoleJson> {
     id?: string;
     name: string;
-    icon_url: string;
     is_owner: boolean;
     is_moderator: boolean;
+    icon_url?: string;
     color?: string;
 
     constructor(info: RoleJson) {
         this.id = info.id;
         this.name = info.name;
-        this.icon_url = info.icon_url;
         this.is_owner = info.is_owner;
         this.is_moderator = info.is_moderator;
+        this.icon_url = info.icon_url;
         this.color = info.color;
     }
 
