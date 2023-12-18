@@ -1,9 +1,7 @@
 import type { Keyable, Model } from '@omuchat/omu.js/src/interface';
 
-import type { AuthorJson } from './author';
-import { Author } from './author';
 import type { ContentJson } from './content';
-import { ContentComponent } from './content';
+import { ContentComponent, TextContent } from './content';
 import type { GiftJson } from './gift';
 import { Gift } from './gift';
 import type { PaidJson } from './paid';
@@ -12,8 +10,8 @@ import { Paid } from './paid';
 export interface MessageJson {
     room_id: string;
     id: string;
+    author_id?: string;
     content?: ContentJson;
-    author?: AuthorJson;
     paid?: PaidJson;
     gift?: GiftJson;
     created_at?: number;
@@ -22,8 +20,8 @@ export interface MessageJson {
 export class Message implements Keyable, Model<MessageJson> {
     room_id: string;
     id: string;
+    author_id?: string;
     content?: ContentComponent;
-    author?: Author;
     paid?: Paid;
     gift?: Gift;
     created_at?: Date;
@@ -31,16 +29,19 @@ export class Message implements Keyable, Model<MessageJson> {
     constructor(options: {
         room_id: string;
         id: string;
+        author_id?: string;
         content?: ContentComponent;
-        author?: Author;
         paid?: Paid;
         gift?: Gift;
         created_at?: Date;
     }) {
+        if (this.created_at && !(this.created_at instanceof Date)) {
+            throw new Error('created_at must be a Date');
+        }
         this.room_id = options.room_id;
         this.id = options.id;
+        this.author_id = options.author_id;
         this.content = options.content;
-        this.author = options.author;
         this.paid = options.paid;
         this.gift = options.gift;
         this.created_at = options.created_at;
@@ -50,12 +51,33 @@ export class Message implements Keyable, Model<MessageJson> {
         return new Message({
             room_id: info.room_id,
             id: info.id,
+            author_id: info.author_id,
             content: info.content && ContentComponent.fromJson(info.content),
-            author: info.author && Author.fromJson(info.author),
             paid: info.paid && Paid.fromJson(info.paid),
             gift: info.gift && Gift.fromJson(info.gift),
             created_at: info.created_at ? new Date(info.created_at) : undefined,
         });
+    }
+
+    get text(): string {
+        if (!this.content) {
+            return '';
+        }
+        const parts: string[] = [];
+        const components = [this.content];
+        while (components.length) {
+            const component = components.shift();
+            if (!component) {
+                continue;
+            }
+            if (component instanceof TextContent) {
+                parts.push(component.text);
+            }
+            if (component.siblings) {
+                components.push(...component.siblings);
+            }
+        }
+        return parts.join('');
     }
 
     key(): string {
@@ -66,15 +88,15 @@ export class Message implements Keyable, Model<MessageJson> {
         return {
             room_id: this.room_id,
             id: this.id,
-            content: this.content && this.content.json(),
-            author: this.author && this.author.json(),
-            paid: this.paid && this.paid.json(),
-            gift: this.gift && this.gift.json(),
-            created_at: this.created_at && this.created_at.getTime(),
+            author_id: this.author_id,
+            content: this.content?.json(),
+            paid: this.paid?.json(),
+            gift: this.gift?.json(),
+            created_at: this.created_at?.getTime(),
         };
     }
 
     toString(): string {
-        return `${this.author}: ${this.content}`;
+        return `${this.author_id}: ${this.content}`;
     }
 }

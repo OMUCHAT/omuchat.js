@@ -4,6 +4,7 @@ import type { RoleJson } from './role';
 import { Role } from './role';
 
 export interface AuthorJson {
+    provider_id: string;
     id: string;
     name: string;
     avatar_url: string;
@@ -11,17 +12,20 @@ export interface AuthorJson {
 }
 
 export class Author implements Keyable, Model<AuthorJson> {
+    provider_id: string;
     id: string;
     name: string;
     avatar_url: string;
     roles?: Role[];
 
     constructor(options: {
+        provider_id: string;
         id: string;
         name: string;
         avatar_url: string;
         roles?: Role[];
     }) {
+        this.provider_id = options.provider_id;
         this.id = options.id;
         this.name = options.name;
         this.avatar_url = options.avatar_url;
@@ -30,6 +34,7 @@ export class Author implements Keyable, Model<AuthorJson> {
 
     static fromJson(info: AuthorJson): Author {
         return new Author({
+            provider_id: info.provider_id,
             id: info.id,
             name: info.name,
             avatar_url: info.avatar_url,
@@ -38,11 +43,12 @@ export class Author implements Keyable, Model<AuthorJson> {
     }
 
     key(): string {
-        return this.id;
+        return `${this.provider_id}:${this.id}`;
     }
 
     json(): AuthorJson {
         return {
+            provider_id: this.provider_id,
             id: this.id,
             name: this.name,
             avatar_url: this.avatar_url,

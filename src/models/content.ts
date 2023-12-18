@@ -11,24 +11,29 @@ export interface ContentComponentJson<T extends string = string> {
 export class ContentComponent implements Model<ContentComponentJson> {
     protected constructor(
         public type: string,
-        public siblings?: Content[],
+        public siblings?: ContentComponent[],
     ) {}
 
     static fromJson(json: ContentJson): Content {
         switch (json.type) {
-        case 'text':
-            return new TextContent(json.text, json.siblings?.map(s => ContentComponent.fromJson(s)));
-        case 'image':
-            return new ImageContent(json.url, json.id, json.siblings?.map(s => ContentComponent.fromJson(s)));
-        case 'root':
-            return new RootContent(json.siblings?.map(s => ContentComponent.fromJson(s)));
-        default:
-            throw new Error(`Unknown content type ${json}`);
+            case 'text':
+                return TextContent.fromJson(json);
+            case 'image':
+                return ImageContent.fromJson(json);
+            case 'root':
+                return RootContent.fromJson(json);
+            default:
+                throw new Error(`Unknown content type ${json}`);
         }
     }
 
     json(): ContentJson {
         throw new Error('Not implemented');
+    }
+
+    walk(cb: (content: ContentComponent) => void): void {
+        cb(this);
+        this.siblings?.forEach(s => s.walk(cb));
     }
 }
 
@@ -36,7 +41,7 @@ export interface RootContentJson extends ContentComponentJson<'root'> {}
 
 export class RootContent extends ContentComponent implements Model<RootContentJson> {
     constructor(
-        siblings?: Content[],
+        siblings?: ContentComponent[],
     ) {
         super('root', siblings);
     }
@@ -45,8 +50,8 @@ export class RootContent extends ContentComponent implements Model<RootContentJs
         return new RootContent(info.siblings?.map(s => ContentComponent.fromJson(s)));
     }
 
-    static of(): RootContent {
-        return new RootContent();
+    static of(siblings?: ContentComponent[]): RootContent {
+        return new RootContent(siblings);
     }
 
     json(): RootContentJson {
@@ -89,23 +94,25 @@ export class TextContent extends ContentComponent implements Model<TextContentJs
 export interface ImageContentJson extends ContentComponentJson<'image'> {
     url: string;
     id: string;
+    name?: string;
 }
 
 export class ImageContent extends ContentComponent implements Model<ImageContentJson> {
     constructor(
         public url: string,
         public id: string,
+        public name?: string,
         siblings?: Content[],
     ) {
         super('image', siblings);
     }
 
     static fromJson(info: ImageContentJson): ImageContent {
-        return new ImageContent(info.url, info.id, info.siblings?.map(s => ContentComponent.fromJson(s)));
+        return new ImageContent(info.url, info.id, info.name, info.siblings?.map(s => ContentComponent.fromJson(s)));
     }
 
-    static of(url: string, id: string): ImageContent {
-        return new ImageContent(url, id);
+    static of(url: string, id: string, name?: string): ImageContent {
+        return new ImageContent(url, id, name);
     }
 
     json(): ImageContentJson {
@@ -113,6 +120,7 @@ export class ImageContent extends ContentComponent implements Model<ImageContent
             type: 'image',
             url: this.url,
             id: this.id,
+            name: this.name,
             siblings: this.siblings?.map(s => s.json()),
         };
     }

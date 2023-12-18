@@ -1,21 +1,28 @@
+import type { Client } from '../client';
+
 import type { EventKey } from './event';
 
-export type EventHandler<T> = (event: T) => void;
+export type EventHandler<T extends unknown[]> = (...event: T) => void;
 
 export class EventRegistry {
     private readonly handlers: Map<string, EventHandler<any>[]>;
 
-    constructor() {
+    constructor(private readonly client: Client) {
         this.handlers = new Map();
     }
 
-    on<T>(event: EventKey<T>, handler: EventHandler<T>): void {
+    on<T extends unknown[]>(event: EventKey<T>, handler: EventHandler<T>): void {
+        if (!this.handlers.has(event.name)) {
+            event.create(this.client, (...data) => {
+                this.emit(event, ...data);
+            });
+        }
         const handlers = this.handlers.get(event.name) || new Array<EventHandler<T>>();
         handlers.push(handler);
         this.handlers.set(event.name, handlers);
     }
 
-    off<T>(event: EventKey<T>, handler: EventHandler<T>): void {
+    off<T extends unknown[]>(event: EventKey<T>, handler: EventHandler<T>): void {
         const handlers = this.handlers.get(event.name);
         if (handlers) {
             const index = handlers.indexOf(handler);
@@ -25,11 +32,11 @@ export class EventRegistry {
         }
     }
 
-    emit<T>(event: EventKey<T>, data: T): void {
+    emit<T extends unknown[]>(event: EventKey<T>, ...data: T): void {
         const handlers = this.handlers.get(event.name);
         if (handlers) {
             for (const handler of handlers) {
-                handler(data);
+                handler(...data);
             }
         }
     }

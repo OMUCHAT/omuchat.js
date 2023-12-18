@@ -32,7 +32,7 @@ export class Client {
             app,
             address: this.address,
         });
-        this.eventRegistry = new EventRegistry();
+        this.eventRegistry = new EventRegistry(this);
         this.chat = this.omu.extensions.register(ChatExtensionType);
     }
 
@@ -40,7 +40,7 @@ export class Client {
         this.omu.start();
     }
 
-    on<T>(event: EventKey<T>, handler: EventHandler<T>): void {
+    on<T extends unknown[]>(event: EventKey<T>, handler: EventHandler<T>): void {
         this.eventRegistry.on(event, handler);
     }
 }
