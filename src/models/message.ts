@@ -48,7 +48,6 @@ export class Message implements Keyable, Model<MessageJson> {
     }
 
     static fromJson(info: MessageJson): Message {
-        console.log('Message.fromJson', info.created_at);
         return new Message({
             room_id: info.room_id,
             id: info.id,
