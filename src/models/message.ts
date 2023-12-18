@@ -14,7 +14,7 @@ export interface MessageJson {
     content?: ContentJson;
     paid?: PaidJson;
     gift?: GiftJson;
-    created_at?: number;
+    created_at?: string; // ISO 8601 date string
 }
 
 export class Message implements Keyable, Model<MessageJson> {
@@ -48,6 +48,7 @@ export class Message implements Keyable, Model<MessageJson> {
     }
 
     static fromJson(info: MessageJson): Message {
+        console.log('Message.fromJson', info.created_at);
         return new Message({
             room_id: info.room_id,
             id: info.id,
@@ -92,7 +93,7 @@ export class Message implements Keyable, Model<MessageJson> {
             content: this.content?.json(),
             paid: this.paid?.json(),
             gift: this.gift?.json(),
-            created_at: this.created_at?.getTime(),
+            created_at: this.created_at?.toISOString(),
         };
     }
 
