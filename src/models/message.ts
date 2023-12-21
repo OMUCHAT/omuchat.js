@@ -10,11 +10,11 @@ import { Paid } from './paid';
 export interface MessageJson {
     room_id: string;
     id: string;
+    created_at: string; // ISO 8601 date string
     author_id?: string;
     content?: ContentJson;
     paid?: PaidJson;
-    gift?: GiftJson;
-    created_at?: string; // ISO 8601 date string
+    gifts?: GiftJson[];
 }
 
 export class Message implements Keyable, Model<MessageJson> {
@@ -23,19 +23,19 @@ export class Message implements Keyable, Model<MessageJson> {
     author_id?: string;
     content?: ContentComponent;
     paid?: Paid;
-    gift?: Gift;
-    created_at?: Date;
+    gifts?: Gift[];
+    created_at: Date;
 
     constructor(options: {
         room_id: string;
         id: string;
+        created_at: Date;
         author_id?: string;
         content?: ContentComponent;
         paid?: Paid;
-        gift?: Gift;
-        created_at?: Date;
+        gifts?: Gift[];
     }) {
-        if (this.created_at && !(this.created_at instanceof Date)) {
+        if (!(options.created_at instanceof Date)) {
             throw new Error('created_at must be a Date');
         }
         this.room_id = options.room_id;
@@ -43,7 +43,7 @@ export class Message implements Keyable, Model<MessageJson> {
         this.author_id = options.author_id;
         this.content = options.content;
         this.paid = options.paid;
-        this.gift = options.gift;
+        this.gifts = options.gifts;
         this.created_at = options.created_at;
     }
 
@@ -54,8 +54,8 @@ export class Message implements Keyable, Model<MessageJson> {
             author_id: info.author_id,
             content: info.content && ContentComponent.fromJson(info.content),
             paid: info.paid && Paid.fromJson(info.paid),
-            gift: info.gift && Gift.fromJson(info.gift),
-            created_at: info.created_at ? new Date(info.created_at) : undefined,
+            gifts: info.gifts?.map(gift => Gift.fromJson(gift)),
+            created_at: new Date(info.created_at),
         });
     }
 
@@ -89,10 +89,10 @@ export class Message implements Keyable, Model<MessageJson> {
             room_id: this.room_id,
             id: this.id,
             author_id: this.author_id,
+            created_at: this.created_at.toISOString(),
             content: this.content?.json(),
             paid: this.paid?.json(),
-            gift: this.gift?.json(),
-            created_at: this.created_at?.toISOString(),
+            gifts: this.gifts?.map(gift => gift.json()),
         };
     }
 

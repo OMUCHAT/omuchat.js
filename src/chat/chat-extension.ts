@@ -21,11 +21,11 @@ export class ChatExtension implements Extension, ClientListener {
     constructor(client: Client) {
         client.addListener(this);
         const tables = client.extensions.get(TableExtensionType);
-        this.messages = tables.register(MessagesTableKey);
-        this.authors = tables.register(AuthorsTableKey);
-        this.channels = tables.register(ChannelsTableKey);
-        this.providers = tables.register(ProvidersTableKey);
-        this.rooms = tables.register(RoomsTableKey);
+        this.messages = tables.get(MessagesTableKey);
+        this.authors = tables.get(AuthorsTableKey);
+        this.channels = tables.get(ChannelsTableKey);
+        this.providers = tables.get(ProvidersTableKey);
+        this.rooms = tables.get(RoomsTableKey);
     }
 
     onInitialized(): void {
