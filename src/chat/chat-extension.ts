@@ -1,17 +1,30 @@
-import type { Client, ClientListener, Extension, ExtensionType, Table } from '@omuchat/omu.js';
-import { ExtensionInfo, ModelTableType, Serializer, TableExtensionType, TableInfo, defineExtensionType } from '@omuchat/omu.js';
+import type { Client, Extension, Table } from '@omuchat/omu.js';
+import { ExtensionInfo, ModelTableType, TableExtensionType, defineExtensionType } from '@omuchat/omu.js';
 
-import type { AuthorJson, ChannelJson, MessageJson, ProviderJson, RoomJson } from '../models';
 import { Author, Channel, Message, Provider, Room } from '../models';
 
-export const ChatExtensionType: ExtensionType<ChatExtension> = defineExtensionType(ExtensionInfo.create('chat'), (client: Client) => new ChatExtension(client), () => [TableExtensionType]);
-const MessagesTableKey = new ModelTableType<Message, MessageJson>(TableInfo.create(ChatExtensionType, 'messages').setUseDatabase(true).setCache(300), Serializer.model(Message.fromJson));
-const AuthorsTableKey = new ModelTableType<Author, AuthorJson>(TableInfo.create(ChatExtensionType, 'authors').setUseDatabase(true).setCache(100), Serializer.model(Author.fromJson));
-const ChannelsTableKey = new ModelTableType<Channel, ChannelJson>(TableInfo.create(ChatExtensionType, 'channels'), Serializer.model(Channel.fromJson));
-const ProvidersTableKey = new ModelTableType<Provider, ProviderJson>(TableInfo.create(ChatExtensionType, 'providers'), Serializer.model(Provider.fromJson));
-const RoomsTableKey = new ModelTableType<Room, RoomJson>(TableInfo.create(ChatExtensionType, 'rooms'), Serializer.model(Room.fromJson));
+export const ChatExtensionType = defineExtensionType({
+    info: ExtensionInfo.create('chat'),
+    create: (client: Client) => new ChatExtension(client),
+    dependencies: () => [TableExtensionType],
+});
+const MessagesTableKey = ModelTableType.ofExtension(ChatExtensionType, {
+    name: 'messages', model: Message,
+});
+const AuthorsTableKey = ModelTableType.ofExtension(ChatExtensionType, {
+    name: 'authors', model: Author,
+});
+const ChannelsTableKey = ModelTableType.ofExtension(ChatExtensionType, {
+    name: 'channels', model: Channel,
+});
+const ProvidersTableKey = ModelTableType.ofExtension(ChatExtensionType, {
+    name: 'providers', model: Provider,
+});
+const RoomsTableKey = ModelTableType.ofExtension(ChatExtensionType, {
+    name: 'rooms', model: Room,
+});
 
-export class ChatExtension implements Extension, ClientListener {
+export class ChatExtension implements Extension {
     messages: Table<Message>;
     authors: Table<Author>;
     channels: Table<Channel>;
@@ -19,15 +32,13 @@ export class ChatExtension implements Extension, ClientListener {
     rooms: Table<Room>;
 
     constructor(client: Client) {
-        client.addListener(this);
         const tables = client.extensions.get(TableExtensionType);
         this.messages = tables.get(MessagesTableKey);
         this.authors = tables.get(AuthorsTableKey);
         this.channels = tables.get(ChannelsTableKey);
         this.providers = tables.get(ProvidersTableKey);
         this.rooms = tables.get(RoomsTableKey);
-    }
-
-    onInitialized(): void {
+        this.messages.setCacheSize(10);
+        this.authors.setCacheSize(10);
     }
 }
