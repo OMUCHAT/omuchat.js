@@ -1,5 +1,6 @@
 import type { Client, Extension, Table } from '@omuchat/omu.js';
-import { ExtensionInfo, ModelTableType, TableExtensionType, defineExtensionType } from '@omuchat/omu.js';
+import { ExtensionInfo, ModelTableType, Serializer, TableExtensionType, defineExtensionType } from '@omuchat/omu.js';
+import { SerializeEndpointType } from '@omuchat/omu.js/src/extension/endpoint';
 
 import { Author, Channel, Message, Provider, Room } from '../models';
 
@@ -24,6 +25,12 @@ const RoomsTableKey = ModelTableType.ofExtension(ChatExtensionType, {
     name: 'rooms', model: Room,
 });
 
+const CreateChannelTreeEndpoint = SerializeEndpointType.ofExtension(ChatExtensionType, {
+    name: 'create_channel_tree',
+    requestSerializer: Serializer.noop(),
+    responseSerializer: Serializer.array(Serializer.model(Channel)),
+});
+
 export class ChatExtension implements Extension {
     messages: Table<Message>;
     authors: Table<Author>;
@@ -31,7 +38,7 @@ export class ChatExtension implements Extension {
     providers: Table<Provider>;
     rooms: Table<Room>;
 
-    constructor(client: Client) {
+    constructor(private readonly client: Client) {
         const tables = client.extensions.get(TableExtensionType);
         this.messages = tables.get(MessagesTableKey);
         this.authors = tables.get(AuthorsTableKey);
@@ -40,5 +47,9 @@ export class ChatExtension implements Extension {
         this.rooms = tables.get(RoomsTableKey);
         this.messages.setCacheSize(10);
         this.authors.setCacheSize(10);
+    }
+
+    async createChannelTree(provider: string): Promise<Channel[]> {
+        return await this.client.endpoints.invoke(CreateChannelTreeEndpoint, provider);
     }
 }
