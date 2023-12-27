@@ -34,6 +34,9 @@ export class Room implements Keyable, Model<RoomJson> {
         this.image_url = json.image_url;
         this.viewers = json.viewers;
     }
+    toString(): string {
+        throw new Error('Method not implemented.');
+    }
 
     static fromJson(json: RoomJson): Room {
         return new Room(json);
@@ -43,7 +46,7 @@ export class Room implements Keyable, Model<RoomJson> {
         return `${this.id}@${this.provider_id}`;
     }
 
-    json(): RoomJson {
+    toJson(): RoomJson {
         return {
             id: this.id,
             provider_id: this.provider_id,

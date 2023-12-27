@@ -31,6 +31,9 @@ export class Provider implements Keyable, Model<ProviderJson> {
         this.description = json.description;
         this.regex = json.regex;
     }
+    toString(): string {
+        throw new Error('Method not implemented.');
+    }
 
     static fromJson(json: ProviderJson): Provider {
         return new Provider(json);
@@ -40,7 +43,7 @@ export class Provider implements Keyable, Model<ProviderJson> {
         return this.id;
     }
 
-    json(): ProviderJson {
+    toJson(): ProviderJson {
         return {
             id: this.id,
             url: this.url,

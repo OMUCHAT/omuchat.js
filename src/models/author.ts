@@ -46,13 +46,13 @@ export class Author implements Keyable, Model<AuthorJson> {
         return `${this.provider_id}:${this.id}`;
     }
 
-    json(): AuthorJson {
+    toJson(): AuthorJson {
         return {
             provider_id: this.provider_id,
             id: this.id,
             name: this.name,
             avatar_url: this.avatar_url,
-            roles: this.roles?.map(role => role.json()),
+            roles: this.roles?.map(role => role.toJson()),
         };
     }
 

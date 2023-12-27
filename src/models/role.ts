@@ -26,7 +26,7 @@ export class Role implements Model<RoleJson> {
         this.color = info.color;
     }
 
-    json(): RoleJson {
+    toJson(): RoleJson {
         return {
             id: this.id,
             name: this.name,

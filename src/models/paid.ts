@@ -24,7 +24,7 @@ export class Paid implements Model<PaidJson> {
         });
     }
 
-    json(): PaidJson {
+    toJson(): PaidJson {
         return {
             amount: this.amount,
             currency: this.currency,

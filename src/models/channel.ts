@@ -31,6 +31,9 @@ export class Channel implements Keyable, Model<ChannelJson> {
         this.icon_url = option.icon_url;
         this.created_at = option.created_at;
     }
+    toString(): string {
+        throw new Error('Method not implemented.');
+    }
 
     static fromJson(json: ChannelJson): Channel {
         return new Channel(json);
@@ -40,7 +43,7 @@ export class Channel implements Keyable, Model<ChannelJson> {
         return this.url;
     }
 
-    json(): ChannelJson {
+    toJson(): ChannelJson {
         return {
             provider_id: this.provider_id,
             id: this.id,

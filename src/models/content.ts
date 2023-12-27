@@ -16,18 +16,18 @@ export class ContentComponent implements Model<ContentComponentJson> {
 
     static fromJson(json: ContentJson): Content {
         switch (json.type) {
-        case 'text':
-            return TextContent.fromJson(json);
-        case 'image':
-            return ImageContent.fromJson(json);
-        case 'root':
-            return RootContent.fromJson(json);
-        default:
-            throw new Error(`Unknown content type ${json}`);
+            case 'text':
+                return TextContent.fromJson(json);
+            case 'image':
+                return ImageContent.fromJson(json);
+            case 'root':
+                return RootContent.fromJson(json);
+            default:
+                throw new Error(`Unknown content type ${json}`);
         }
     }
 
-    json(): ContentJson {
+    toJson(): ContentJson {
         throw new Error('Not implemented');
     }
 
@@ -45,6 +45,9 @@ export class RootContent extends ContentComponent implements Model<RootContentJs
     ) {
         super('root', siblings);
     }
+    toString(): string {
+        throw new Error('Method not implemented.');
+    }
 
     static fromJson(info: RootContentJson): RootContent {
         return new RootContent(info.siblings?.map(s => ContentComponent.fromJson(s)));
@@ -54,10 +57,10 @@ export class RootContent extends ContentComponent implements Model<RootContentJs
         return new RootContent(siblings);
     }
 
-    json(): RootContentJson {
+    toJson(): RootContentJson {
         return {
             type: 'root',
-            siblings: this.siblings?.map(s => s.json()),
+            siblings: this.siblings?.map(s => s.toJson()),
         };
     }
 }
@@ -73,6 +76,9 @@ export class TextContent extends ContentComponent implements Model<TextContentJs
     ) {
         super('text', siblings);
     }
+    toString(): string {
+        throw new Error('Method not implemented.');
+    }
 
     static fromJson(info: TextContentJson): TextContent {
         return new TextContent(info.text, info.siblings?.map(s => ContentComponent.fromJson(s)));
@@ -82,11 +88,11 @@ export class TextContent extends ContentComponent implements Model<TextContentJs
         return new TextContent(text);
     }
 
-    json(): TextContentJson {
+    toJson(): TextContentJson {
         return {
             type: 'text',
             text: this.text,
-            siblings: this.siblings?.map(s => s.json()),
+            siblings: this.siblings?.map(s => s.toJson()),
         };
     }
 }
@@ -106,6 +112,9 @@ export class ImageContent extends ContentComponent implements Model<ImageContent
     ) {
         super('image', siblings);
     }
+    toString(): string {
+        throw new Error('Method not implemented.');
+    }
 
     static fromJson(info: ImageContentJson): ImageContent {
         return new ImageContent(info.url, info.id, info.name, info.siblings?.map(s => ContentComponent.fromJson(s)));
@@ -115,13 +124,13 @@ export class ImageContent extends ContentComponent implements Model<ImageContent
         return new ImageContent(url, id, name);
     }
 
-    json(): ImageContentJson {
+    toJson(): ImageContentJson {
         return {
             type: 'image',
             url: this.url,
             id: this.id,
             name: this.name,
-            siblings: this.siblings?.map(s => s.json()),
+            siblings: this.siblings?.map(s => s.toJson()),
         };
     }
 }

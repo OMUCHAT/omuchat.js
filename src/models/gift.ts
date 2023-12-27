@@ -39,7 +39,7 @@ export class Gift implements Model<GiftJson> {
         });
     }
 
-    json(): GiftJson {
+    toJson(): GiftJson {
         return {
             id: this.id,
             name: this.name,

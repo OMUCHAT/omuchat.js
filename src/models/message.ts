@@ -84,15 +84,15 @@ export class Message implements Keyable, Model<MessageJson> {
         return `${this.room_id}#${this.id}`;
     }
 
-    json(): MessageJson {
+    toJson(): MessageJson {
         return {
             room_id: this.room_id,
             id: this.id,
             author_id: this.author_id,
             created_at: this.created_at.toISOString(),
-            content: this.content?.json(),
-            paid: this.paid?.json(),
-            gifts: this.gifts?.map(gift => gift.json()),
+            content: this.content?.toJson(),
+            paid: this.paid?.toJson(),
+            gifts: this.gifts?.map(gift => gift.toJson()),
         };
     }
 
