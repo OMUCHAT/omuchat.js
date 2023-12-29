@@ -23,7 +23,7 @@ export const events = {
     MessageUpdate: new EventKey<[Message]>('on_message_update', (client, invoke) => {
         client.chat.messages.listen();
         client.chat.messages.addListener({
-            onSet: (messages) => {
+            onUpdate: (messages) => {
                 for (const message of messages.values()) {
                     invoke(message);
                 }
@@ -53,7 +53,7 @@ export const events = {
     AuthorUpdate: new EventKey<[Author]>('on_author_update', (client, invoke) => {
         client.chat.authors.listen();
         client.chat.authors.addListener({
-            onSet: (authors) => {
+            onUpdate: (authors) => {
                 for (const author of authors.values()) {
                     invoke(author);
                 }
@@ -83,7 +83,7 @@ export const events = {
     ChannelUpdate: new EventKey<[Channel]>('on_channel_update', (client, invoke) => {
         client.chat.channels.listen();
         client.chat.channels.addListener({
-            onSet: (channels) => {
+            onUpdate: (channels) => {
                 for (const channel of channels.values()) {
                     invoke(channel);
                 }
@@ -113,7 +113,7 @@ export const events = {
     ProviderUpdate: new EventKey<[Provider]>('on_provider_update', (client, invoke) => {
         client.chat.providers.listen();
         client.chat.providers.addListener({
-            onSet: (providers) => {
+            onUpdate: (providers) => {
                 for (const provider of providers.values()) {
                     invoke(provider);
                 }
@@ -143,7 +143,7 @@ export const events = {
     RoomUpdate: new EventKey<[Room]>('on_room_update', (client, invoke) => {
         client.chat.rooms.listen();
         client.chat.rooms.addListener({
-            onSet: (rooms) => {
+            onUpdate: (rooms) => {
                 for (const room of rooms.values()) {
                     invoke(room);
                 }
