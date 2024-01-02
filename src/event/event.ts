@@ -4,7 +4,7 @@ import type { Author, Channel, Message, Provider, Room } from '../models';
 export class EventKey<T extends unknown[]> {
     constructor(
         public readonly name: string,
-        public readonly create: (client: Client, invoke: (...data: T) => void) => void = () => {},
+        public readonly create: (client: Client, invoke: (...data: T) => void) => void = (): void => {},
     ) {}
 }
 
