@@ -1,4 +1,4 @@
-import type { Model } from '@omuchat/omu.js/src/interface';
+import type { Model } from '@omuchat/omu.js/interface/index.js';
 
 export type ContentJson = RootContentJson | TextContentJson | ImageContentJson;
 export type Content = RootContent | TextContent | ImageContent;
@@ -16,14 +16,14 @@ export class ContentComponent implements Model<ContentComponentJson> {
 
     static fromJson(json: ContentJson): Content {
         switch (json.type) {
-        case 'text':
-            return TextContent.fromJson(json);
-        case 'image':
-            return ImageContent.fromJson(json);
-        case 'root':
-            return RootContent.fromJson(json);
-        default:
-            throw new Error(`Unknown content type ${json}`);
+            case 'text':
+                return TextContent.fromJson(json);
+            case 'image':
+                return ImageContent.fromJson(json);
+            case 'root':
+                return RootContent.fromJson(json);
+            default:
+                throw new Error(`Unknown content type ${json}`);
         }
     }
 

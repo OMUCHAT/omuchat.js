@@ -1,5 +1,5 @@
-import type { Client } from '../client';
-import type { Author, Channel, Message, Provider, Room } from '../models';
+import type { Client } from '../client/index.js';
+import type { Author, Channel, Message, Provider, Room } from '../models/index.js';
 
 export class EventKey<T extends unknown[]> {
     constructor(

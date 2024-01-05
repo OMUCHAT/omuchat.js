@@ -1,6 +1,6 @@
-import type { Client } from '../client';
+import type { Client } from '../client/index.js';
 
-import type { EventKey } from './event';
+import type { EventKey } from './event.js';
 
 export type EventHandler<T extends unknown[]> = (...event: T) => void;
 

@@ -1,7 +1,7 @@
-import type { Keyable, Model } from '@omuchat/omu.js/src/interface';
+import type { Keyable, Model } from '@omuchat/omu.js/interface/index.js';
 
-import type { RoleJson } from './role';
-import { Role } from './role';
+import type { RoleJson } from './role.js';
+import { Role } from './role.js';
 
 export interface AuthorJson {
     provider_id: string;

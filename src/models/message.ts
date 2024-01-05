@@ -1,11 +1,11 @@
-import type { Keyable, Model } from '@omuchat/omu.js/src/interface';
+import type { Keyable, Model } from '@omuchat/omu.js/interface/index.js';
 
-import type { ContentJson } from './content';
-import { ContentComponent, TextContent } from './content';
-import type { GiftJson } from './gift';
-import { Gift } from './gift';
-import type { PaidJson } from './paid';
-import { Paid } from './paid';
+import type { ContentJson } from './content.js';
+import { ContentComponent, TextContent } from './content.js';
+import type { GiftJson } from './gift.js';
+import { Gift } from './gift.js';
+import type { PaidJson } from './paid.js';
+import { Paid } from './paid.js';
 
 export interface MessageJson {
     room_id: string;

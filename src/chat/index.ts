@@ -1,2 +1,2 @@
-export * from './chat-extension';
+export * from './chat-extension.js';
 
